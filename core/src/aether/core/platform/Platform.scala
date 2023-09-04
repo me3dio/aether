@@ -1,10 +1,15 @@
 package aether.core.platform
+import aether.core.base.Base
 import aether.core.graphics.Display
-import aether.core.base.*
+import aether.core.graphics.Display.DisplayFactory
+import aether.core.network.WebSocket.WebSocketFactory
+
 import Dispatcher.CallbackEvent
+import Platform.*
 
 object Platform {
-  case class Update(time: Long) extends Event
+
+  case class Config(updateStep: Int = 0)
 
   enum Name {
     case Jvm
@@ -12,14 +17,15 @@ object Platform {
   }
 }
 
-trait Platform(modules: Seq[Module]) {
+trait Platform(config: Config, modules: Seq[Module]) {
 
-  val displayFactory: Resource.Factory[Display, Display.Config]
+  val displayFactory: DisplayFactory
+  val webSocketFactory: WebSocketFactory
 
   val dispatcher: Dispatcher = new Dispatcher()
   given Dispatcher = dispatcher
 
-  val name: Platform.Name
+  val name: Name
   val log: Log
   val base: Base
   protected val resourceBase: Base
@@ -29,7 +35,11 @@ trait Platform(modules: Seq[Module]) {
     resourceBase.base(path)
   }
 
-  // Initialize system modules before instantiating App
+  private var running = true
+
+  def exit(): Unit = running = false
+
+    // Initialize system modules before instantiating App
   init()
 
   def init() = {
@@ -43,27 +53,34 @@ trait Platform(modules: Seq[Module]) {
     modules.reverse.foreach(_.event(Module.Uninit))
   }
 
-  private var running = true
-
-  def exit(): Unit = running = false
-
   def runApp(app: Module) = {
     app.event(Module.Init(this))
     val mods = modules :+ app
+    def send(event: Event) = mods.foreach(_.event(event))
+
+    val startTime = System.currentTimeMillis()
+    var updateTime = startTime
 
     run {
       var processEvents = true
       while (processEvents) {
         dispatcher.getEvent() match {
           case Some(CallbackEvent(callback)) => callback()
-          case Some(event) => mods.foreach(_.event(event))
+          case Some(event) => send(event)
           case None        => processEvents = false
+        }
+      }
+      if (config.updateStep>0) {
+        val now = System.currentTimeMillis()
+        while (updateTime < now) {
+          updateTime += config.updateStep
+          send(Module.Update(updateTime))
         }
       }
 
       displayFactory.instances.foreach(_.render { disp =>
         assert(disp.graphics.target != null)
-        mods.foreach(_.event(Display.Paint(disp)))
+        send(Display.Paint(disp))
       })
       if (!running) {
         app.event(Module.Uninit)

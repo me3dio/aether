@@ -33,12 +33,13 @@ class CanvasApp(val platform: Platform) extends Module {
   val font = Font.default()
 
   // val config = res.config.get
-  val state = new State()
+  val state = new State(config)
   var ui: Option[CanvasWidget] = None // CanvasWidget(platform, state, size.toVec2F)
   var uiEvents: Option[WidgetEvents] = None
-
+  val sync = new Sync(state, this)
+  
   val canvas = ShaderCanvas(g.size)
-
+  
   val res = Resources(platform)
   res.allRes.onChange { r =>
     r.error.map(assert(false, _))
@@ -52,6 +53,7 @@ class CanvasApp(val platform: Platform) extends Module {
       case e: Module.Init   => Log("Module.Init")
       case Module.Uninit    =>
       case e: Module.Update =>
+        sync.event(e)
       case Display.Paint(disp) =>
         g.clear(0xff004400)
         // val paintEvent = Canvas.Render(canvas, RectF(Vec2F.Zero, disp.size.toVec2F))
@@ -60,8 +62,13 @@ class CanvasApp(val platform: Platform) extends Module {
         font.get.foreach(font => canvas.drawString(Vec2F.Zero, font, "Hello World"))
         canvas.flush()
         // Logo.paint()
+      case e: WebSocket.WebSocketEvent =>
+        sync.event(e)
       case KeyPressed(S) =>
+        sync.save()
       case KeyPressed(L) =>
+        Log(s"Load canvas")
+        sync.socket.send("load")
       case e =>
         uiEvents.foreach(_.event(e))
     }

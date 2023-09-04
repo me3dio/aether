@@ -1,18 +1,18 @@
-package aether.js.platform
+package aether.js.network
 
+import aether.core.graphics.Texture
 import aether.core.network.HttpClient
 import aether.core.platform.*
-import aether.core.graphics.Texture
-import org.scalajs.dom.XMLHttpRequest
-import scala.scalajs.js
-
-import scala.concurrent.Future
-import scala.concurrent.Promise
-
-import concurrent.ExecutionContext.Implicits.global
 import io.circe.Json
 import io.circe._
 import io.circe.parser._
+import org.scalajs.dom.XMLHttpRequest
+
+import scala.concurrent.Future
+import scala.concurrent.Promise
+import scala.scalajs.js
+
+import concurrent.ExecutionContext.Implicits.global
 
 object JsHttpClient {
 
