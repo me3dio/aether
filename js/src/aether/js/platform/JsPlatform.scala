@@ -1,12 +1,16 @@
 package aether.js.platform
 
-import aether.core.platform.Platform.Update
-import aether.core.platform.*
-import org.scalajs.dom
-import aether.js.graphics.JsDisplay
 import aether.core.base.HttpBase
+import aether.core.platform.*
+import aether.js.graphics.JsDisplay
+import aether.js.network.JsHttpClient
+import aether.js.network.JsWebSocket
+import org.scalajs.dom
 
-class JsPlatform extends Platform(Seq(JsDisplay)) {
+import Platform.Config
+
+class JsPlatform extends Platform(Config(), Seq(JsDisplay)) {
+  given Platform = this
   val name = Platform.Name.Js
   val log = new Log {
     def apply(message: String) = {
@@ -21,6 +25,7 @@ class JsPlatform extends Platform(Seq(JsDisplay)) {
   val resourcePath: String = "resource"
 
   val displayFactory = JsDisplay.factory(dispatcher)
+  val webSocketFactory = JsWebSocket.factory
 
   def run(loop: => Boolean): Unit = {
     def frame(time: Double): Unit = {

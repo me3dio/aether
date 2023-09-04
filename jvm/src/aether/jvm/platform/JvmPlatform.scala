@@ -1,15 +1,18 @@
 package aether.jvm.platform
 
-import aether.core.platform.Platform
-import Platform.*
-import aether.core.platform.Log
-import aether.core.platform.Event
-import aether.jvm.graphics.JvmDisplay
-import aether.core.platform.Dispatcher
 import aether.core.graphics.Display
+import aether.core.platform.Dispatcher
+import aether.core.platform.Event
+import aether.core.platform.Log
+import aether.core.platform.Platform
+import aether.jvm.graphics.JvmDisplay
+import aether.jvm.network.JvmWebSocket
+
 import java.nio.file.Paths
 
-class JvmPlatform() extends Platform(Seq(JvmDisplay)) {
+import Platform.*
+
+class JvmPlatform() extends Platform(Config(), Seq(JvmDisplay)) {
   val name = Platform.Name.Jvm
   val log = new Log {
     def apply(message: String) = {
@@ -23,6 +26,7 @@ class JvmPlatform() extends Platform(Seq(JvmDisplay)) {
   val resourceBase  = new FileBase("app/src")
 
   val displayFactory = JvmDisplay.factory(this)
+  val webSocketFactory = JvmWebSocket.factory(using this)
 
   def run(loop: => Boolean): Unit = {
     while (loop) Thread.`yield`()

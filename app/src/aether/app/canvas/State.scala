@@ -4,7 +4,7 @@ import aether.lib.quad.QuadGrid
 import aether.lib.quad.QuadModel
 import aether.core.graphics.Graphics
 
-class State(using Graphics) {
+class State(val config: Config)(using Graphics) {
 
   var color = 0xffffffff
   // var grid: QuadGrid[Int] = _

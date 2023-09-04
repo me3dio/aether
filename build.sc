@@ -53,6 +53,7 @@ object jvm extends ScalaModule {
       case x     => x // linux, mac, windows, sunos
     }
     Agg(
+      ivy"org.java-websocket:Java-WebSocket:1.5.3", // WebSocket
     ) ++ Agg("lwjgl", "lwjgl-glfw", "lwjgl-opengl", "lwjgl-opengles").flatMap {
       case module =>
         Seq(
