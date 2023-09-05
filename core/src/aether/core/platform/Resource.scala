@@ -5,6 +5,9 @@ import javax.sound.midi.spi.MidiFileReader
 import scala.collection.mutable.ArrayBuffer
 import Resource.*
 import scala.annotation.nowarn
+import scala.util.Success
+import scala.util.Failure
+import scala.util.Try
 
 object Resource {
 
@@ -132,6 +135,17 @@ class Resource[T]() {
     listeners += listener
     if (state != State.Loading()) listener(this)
     this
+  }
+
+  def onComplete(listener: Try[T] => _): Unit = {
+    state match {
+      case State.Error(msg)       => listener(Failure(new Throwable(msg)))
+      case State.Loaded[T](value) => listener(Success(value))
+      case State.Loading()        => onChange { _ =>
+        onComplete(listener)
+        this
+      }
+    }
   }
 
   def map[U](f: T => U, res: Resource[U] = new Resource[U]())(using dispatcher: Dispatcher): Resource[U] = {
