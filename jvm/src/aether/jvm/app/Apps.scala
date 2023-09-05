@@ -5,6 +5,7 @@ import aether.core.platform.Module
 import aether.app.shader.ShaderApp
 import aether.app.mandelbrot.Mandelbrot
 import aether.app.canvas.CanvasApp
+import aether.app.shadertoy.ShadertoyApp
 
 object Apps {
 
@@ -20,4 +21,6 @@ object Apps {
   def mandelbrot = launch(Mandelbrot(platform))
   @main
   def canvas = launch(CanvasApp(platform))
+  @main
+  def shadertoy = launch(ShadertoyApp(platform))
 }

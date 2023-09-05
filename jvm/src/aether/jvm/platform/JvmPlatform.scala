@@ -7,6 +7,7 @@ import aether.core.platform.Log
 import aether.core.platform.Platform
 import aether.jvm.graphics.JvmDisplay
 import aether.jvm.network.JvmWebSocket
+import aether.jvm.network.JvmHttpClient
 
 import java.nio.file.Paths
 
@@ -26,6 +27,7 @@ class JvmPlatform() extends Platform(Config(), Seq(JvmDisplay)) {
   val resourceBase  = new FileBase("app/src")
 
   val displayFactory = JvmDisplay.factory(this)
+  val httpClientFactory = JvmHttpClient.factory
   val webSocketFactory = JvmWebSocket.factory(using this)
 
   def run(loop: => Boolean): Unit = {

@@ -22,7 +22,6 @@ class Sync(state: State, handler: Module)(using platform: Platform) {
   // var time: Time = Time.Undefined
   var dataSerial = 0
 
-
   def event(event: WebSocketEvent | Update) = {
     event match {
       case Update(time) =>

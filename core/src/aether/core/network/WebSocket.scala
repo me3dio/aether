@@ -1,16 +1,17 @@
 package aether.core.network
 
+import WebSocket.*
 import aether.core.buffers.ByteBuffer
 import aether.core.platform.*
-
-import WebSocket.*
 
 object WebSocket {
   type WebSocketFactory = Resource.Factory[WebSocket, Config]
 
   case class Config(url: String) extends Resource.Config
 
-  def open(url: String)(using platform: Platform): WebSocket = platform.webSocketFactory.create(Config(url))
+  def open(url: String)(using platform: Platform): WebSocket = {
+    platform.webSocketFactory.create(Config(url))
+  }
 
   abstract class WebSocketEvent extends Event {
     def socket: WebSocket

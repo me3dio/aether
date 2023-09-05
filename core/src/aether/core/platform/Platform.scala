@@ -3,6 +3,7 @@ import aether.core.base.Base
 import aether.core.graphics.Display
 import aether.core.graphics.Display.DisplayFactory
 import aether.core.network.WebSocket.WebSocketFactory
+import aether.core.network.HttpClient.HttpClientFactory
 
 import Dispatcher.CallbackEvent
 import Platform.*
@@ -21,6 +22,7 @@ trait Platform(config: Config, modules: Seq[Module]) {
 
   val displayFactory: DisplayFactory
   val webSocketFactory: WebSocketFactory
+  val httpClientFactory: HttpClientFactory
 
   val dispatcher: Dispatcher = new Dispatcher()
   given Dispatcher = dispatcher
