@@ -1,21 +1,30 @@
 package aether.js.network
 
-import aether.core.graphics.Texture
 import aether.core.network.HttpClient
 import aether.core.platform.*
-import io.circe.Json
-import io.circe._
-import io.circe.parser._
+import aether.core.graphics.Texture
 import org.scalajs.dom.XMLHttpRequest
+import scala.scalajs.js
 
 import scala.concurrent.Future
 import scala.concurrent.Promise
-import scala.scalajs.js
 
 import concurrent.ExecutionContext.Implicits.global
+import io.circe.Json
+import io.circe._
+import io.circe.parser._
+import HttpClient.* 
 
 object JsHttpClient {
 
+  def factory(dispatcher: Dispatcher) = new HttpClientFactory {
+    given HttpClientFactory = this
+    given Dispatcher = dispatcher
+    def createThis(config: Config): HttpClient = {
+      //TODO: use config?
+      new JsHttpClient()
+    }
+  }
   def loadBytes(url: String)(using dispatcher: Dispatcher): Resource[Array[Byte]] = new Loader(url).loadBytes()
   def loadJson(url: String)(using dispatcher: Dispatcher): Resource[Json] = new Loader(url).loadJson()
   def loadHeaders(url: String)(using dispatcher: Dispatcher): Resource[Map[String, String]] =
@@ -71,7 +80,7 @@ object JsHttpClient {
   }
 }
 
-class JsHttpClient(using dispatcher: Dispatcher) extends HttpClient {
+class JsHttpClient()(using dispatcher: Dispatcher) extends HttpClient {
 
   def headers(url: String): Resource[Map[String, String]] = {
     JsHttpClient.loadHeaders(url)
@@ -119,4 +128,5 @@ class JsHttpClient(using dispatcher: Dispatcher) extends HttpClient {
     req.send(content.toString)
     promise.future
   }
+
 }

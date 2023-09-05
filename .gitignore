@@ -3,3 +3,5 @@
 .metals
 .scala-build
 out
+
+.env
