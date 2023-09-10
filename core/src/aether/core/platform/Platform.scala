@@ -10,7 +10,10 @@ import Platform.*
 
 object Platform {
 
-  case class Config(updateStep: Int = 0)
+  case class Config(
+    updateStep: Int = 0,
+    projectPackages: Map[String, String] = Map(),
+  )
 
   enum Name {
     case Jvm
@@ -32,12 +35,13 @@ trait Platform(config: Config, modules: Seq[Module]) {
   val name: Name
   val log: Log
   val base: Base
-  protected val resourceBase: Base
 
-  def resource(source: Any): Base = {
-    val path = source.getClass().getName().split("\\.").dropRight(1).mkString("/")
-    resourceBase.base(path)
-  }
+  // protected val resourceBase: Base
+  def resource(source: Any): Base = ???
+  // {
+  //   val path = source.getClass().getName().split("\\.").dropRight(1).mkString("/")
+  //   resourceBase.base(path)
+  // }
 
   private var running = true
 

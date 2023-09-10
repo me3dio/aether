@@ -12,8 +12,9 @@ import aether.jvm.network.JvmHttpClient
 import java.nio.file.Paths
 
 import Platform.*
+import aether.core.base.Base
 
-class JvmPlatform() extends Platform(Config(), Seq(JvmDisplay)) {
+class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDisplay)) {
   val name = Platform.Name.Jvm
   val log = new Log {
     def apply(message: String) = {
@@ -24,7 +25,17 @@ class JvmPlatform() extends Platform(Config(), Seq(JvmDisplay)) {
   val wd = Paths.get("").toAbsolutePath().toString().replaceAll("\\\\", "/")
   val base = new FileBase(wd)
 
-  val resourceBase  = new FileBase("app/src")
+  override def resource(source: Any): Base = {
+    val className = source.getClass().getName()
+    val path = config.projectPackages.collectFirst {
+      case (pack, path) if className.startsWith(pack) => s"$path/src"
+    }
+    assert(path.isDefined, s"Resource path not found for $className")
+    val classPath = className.split("\\.").dropRight(1).mkString("/")
+    val basePath = path.get +"/"+ classPath
+    Log(s"Resource base path for $className: $basePath")
+    FileBase(basePath)
+  }
 
   val displayFactory = JvmDisplay.factory(this)
   val httpClientFactory = JvmHttpClient.factory

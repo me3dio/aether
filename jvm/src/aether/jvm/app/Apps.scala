@@ -6,10 +6,20 @@ import aether.app.shader.ShaderApp
 import aether.app.mandelbrot.Mandelbrot
 import aether.app.canvas.CanvasApp
 import aether.app.shadertoy.ShadertoyApp
+import aether.core.platform.Platform.Config
 
 object Apps {
 
-  val platform = JvmPlatform()
+  val projectPackages = Map(
+    "aether.app" -> "app",
+    "aether.lib" -> "app",
+    "aether.core" -> "core",
+    "aether.js" -> "js",
+    "aether.jvm" -> "jvm",
+    "server.jvm" -> "server"
+  )
+
+  val platform = JvmPlatform(Config(projectPackages = projectPackages))
 
   def launch(app: Module) = {
     platform.runApp(app)

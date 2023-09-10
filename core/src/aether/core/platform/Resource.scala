@@ -34,6 +34,7 @@ object Resource {
     final def load(ref: Ref, config: C)(using dispatcher: Dispatcher): Resource[T] = {
       val res = loadThis(ref, config)
       res.onChange { r =>
+        r.error.map(e => sys.error(s"Error loading resource $ref: $e"))
         resources += r()
       }
       res

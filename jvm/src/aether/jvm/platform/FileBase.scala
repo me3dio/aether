@@ -17,7 +17,7 @@ import aether.core.platform.Log
 class FileBase(basePath: String, reload: Boolean = false)(using dispatcher: Dispatcher) extends Base {
   def withReload = if (reload) this else FileBase(basePath, reload = true)
 
-  def toUrl(path: String): String = s"file://$basePath/$path"
+  def toUrl(path: String): String = s"file:$basePath/$path"
 
   def base(path: String): Base = FileBase(s"$basePath/$path")
 
