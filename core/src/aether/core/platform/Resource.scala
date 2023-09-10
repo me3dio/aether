@@ -146,10 +146,15 @@ class Resource[T]() {
     state match {
       case State.Error(msg)       => listener(Failure(new Throwable(msg)))
       case State.Loaded[T](value) => listener(Success(value))
-      case State.Loading()        => onChange { _ =>
-        onComplete(listener)
-        this
-      }
+      case State.Loading()        => onChange(_ => onComplete(listener))
+    }
+  }
+
+  def onError(listener: String => _): Unit = {
+    state match {
+      case State.Error(msg)       => listener(msg)
+      case State.Loaded[T](value) =>
+      case State.Loading()        => onChange(_ => onError(listener))
     }
   }
 
