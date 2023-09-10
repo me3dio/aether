@@ -16,11 +16,10 @@ class WidgetRoot(val root: Widget) extends Module {
     // case Canvas.Paint(canvas, rect) => paint(canvas)
       // root.paint(canvas)
     case n =>
-      //TODO
-      ???
+      root.event(event)
   }
 
   def paint(canvas: Canvas) = {
-    ???
+    root.paint(canvas)
   }
 }
