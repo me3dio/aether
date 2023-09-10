@@ -15,8 +15,9 @@ import aether.core.input.PointerEvent.*
 import aether.core.input.TouchEvent
 import aether.core.input.TouchEvent.*
 import aether.core.input.TouchEvent.Type.*
-import Widget.*
 import aether.lib.visual.Visual
+import Widget.*
+import WidgetEvent.*
 
 object WidgetEvents {
 }

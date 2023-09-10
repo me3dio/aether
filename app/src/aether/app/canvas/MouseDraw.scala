@@ -4,9 +4,7 @@ import aether.core.types.Vec2F
 import aether.core.platform.Event
 import aether.core.input.PointerEvent.MouseButton
 import aether.core.input.PointerEvent.MouseMove
-import aether.lib.widget.Widget.PressEvent
-import aether.lib.widget.Widget.ReleaseEvent
-import aether.lib.widget.Widget.DragEvent
+import aether.lib.widget.WidgetEvent.*
 import aether.core.platform.Log
 
 trait MouseDraw {

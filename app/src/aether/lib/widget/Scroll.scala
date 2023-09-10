@@ -6,7 +6,7 @@ import aether.core.math.MathF
 import aether.core.types.Mat3F
 import aether.core.types.RectF
 import aether.core.types.Vec2F
-import aether.lib.widget.Widget.*
+import aether.lib.widget.WidgetEvent.*
 import Scroll._
 import aether.core.platform.Event
 import aether.lib.types.Tx2FAxis

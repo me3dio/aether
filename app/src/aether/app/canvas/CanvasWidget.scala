@@ -10,7 +10,7 @@ import aether.lib.quad.shader.QuadShader
 import aether.lib.canvas.Canvas
 import aether.lib.widget.Scroll
 import aether.lib.widget.Widget
-import aether.lib.widget.Widget.*
+import aether.lib.widget.WidgetEvent.*
 import aether.core.types.VecExt.*
 import aether.core.input.KeyEvent.*
 
