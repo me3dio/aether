@@ -24,6 +24,8 @@ trait Platform(config: Config, modules: Seq[Module]) {
   val webSocketFactory: WebSocketFactory
   val httpClientFactory: HttpClientFactory
 
+  def primaryDisplay: Option[Display] = displayFactory.instances.headOption
+
   val dispatcher: Dispatcher = new Dispatcher()
   given Dispatcher = dispatcher
 
