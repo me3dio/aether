@@ -8,7 +8,10 @@ import io.circe.Json
 import io.circe.parser.parse
 import aether.core.platform.Log
 
-class ResourceBase(cls: Class[_])(using dispatcher: Dispatcher) extends Base {
+class ResourceBase(cls: Class[_], reload: Boolean = false)(using dispatcher: Dispatcher) extends Base {
+
+  def withReload = if (reload) this else ResourceBase(cls, reload = true)
+
   def toUrl(path: String): String = ???
 
   def base(path: String): Base = ???

@@ -7,7 +7,9 @@ import aether.core.network.HttpClient
 import io.circe.Json
 import aether.core.base.Base.Entry
 
-class HttpBase(http: HttpClient, baseUrl: String)(using dispatcher: Dispatcher) extends Base {
+class HttpBase(http: HttpClient, baseUrl: String, reload: Boolean = false)(using dispatcher: Dispatcher) extends Base {
+
+  def withReload = if (reload) this else HttpBase(http, baseUrl, reload = true)
 
   def toUrl(path: String): String = s"$baseUrl/$path"
 

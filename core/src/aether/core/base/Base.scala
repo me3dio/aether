@@ -22,6 +22,9 @@ trait Base {
   def entry(path: String): Resource[Entry]
   def list(pathDir: String): Resource[Seq[Entry]]
 
+  /** This Base with auto-reload enabled. */
+  def withReload: Base
+
   def loadString(path: String): Resource[String]
   // def loadTexture(path: String): Resource[Texture]
   def loadBytes(path: String): Resource[Array[Byte]]
