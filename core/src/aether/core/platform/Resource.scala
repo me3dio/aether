@@ -63,6 +63,10 @@ object Resource {
     res
   }
 
+  def apply[T](seq: Resource[T]*)(using dispatcher: Dispatcher): Resource[Seq[T]] = {
+    sequence(seq)
+  }
+
   /** Convert Seq[Resource[T]] to Resource[Seq[T]]
     *
     * @param seq
