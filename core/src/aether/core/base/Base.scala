@@ -5,6 +5,7 @@ import aether.core.buffers.ByteBuffer
 import aether.core.graphics.Texture
 import io.circe.Json
 import Base.*
+import aether.core.platform.Dispatcher
 
 object Base {
   
@@ -30,4 +31,7 @@ trait Base {
   def loadBytes(path: String): Resource[Array[Byte]]
   def loadJson(path: String): Resource[Json]
   
+  def loadBuffer(path: String)(using dispatcher: Dispatcher): Resource[ByteBuffer] = {
+    loadBytes(path).map(ByteBuffer(_))
+  }
 }
