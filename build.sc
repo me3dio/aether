@@ -5,6 +5,7 @@ import mill.scalajslib.ScalaJSModule
 val scalaV = "3.3.0"
 val circeV = "0.14.3"
 val http4sV = "1.0.0-M38"
+val scalaTestV = "3.2.17"
 
 object core extends ScalaModule {
   def scalaVersion = scalaV
@@ -14,7 +15,12 @@ object core extends ScalaModule {
     ivy"io.circe::circe-generic::$circeV",
     ivy"io.circe::circe-parser::$circeV",
   )
-
+    object test extends Tests {
+      def ivyDeps = Agg(
+        ivy"org.scalatest::scalatest:$scalaTestV",
+      )
+      def testFramework = "org.scalatest.tools.Framework"
+    }
 }
 
 object app extends ScalaModule {

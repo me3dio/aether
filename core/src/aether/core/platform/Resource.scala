@@ -171,9 +171,15 @@ class Resource[T]() {
       dispatcher: Dispatcher
   ): Resource[U] = {
     state match {
-      case State.Error(msg)       => res.error = msg
-      case State.Loaded[T](value) => f(value).onChange(r => res.set(r()))
-      case State.Loading()        => onChange(_ => flatMap(f, res))
+      case State.Error(msg) => res.error = msg
+      case State.Loaded[T](value) =>
+        f(value).onChange {
+          _.state match {
+            case State.Loaded(value) => res.set(value)
+            case State.Error(msg)    => res.error = msg
+          }
+        }
+      case State.Loading() => onChange(_ => flatMap(f, res))
     }
     res
   }
