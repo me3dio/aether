@@ -1,5 +1,7 @@
 package aether.core.buffers
 
+import aether.core.platform.Log
+
 /**
  * Buffer with data read/write support.
  * Read & write methods may apply to multiple buffer elements.
@@ -102,6 +104,7 @@ trait DataBuffer extends Buffer with DataBuffer.IO {
             }
             break()
           case '\n' => break()
+          case c => out += c
         }
       }
     out.toString()
