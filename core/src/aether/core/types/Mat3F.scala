@@ -22,7 +22,7 @@ object Mat3F {
 
   def diagonal(s: Float) = new Mat3F(s, 0, 0, 0, s, 0, 0, 0, s)
   def diagonal(x: Float, y: Float, z: Float) = new Mat3F(x, 0, 0, 0, y, 0, 0, 0, z)
-  val identity = diagonal(1)
+  val Identity = diagonal(1)
 }
 
 final class Mat3F(

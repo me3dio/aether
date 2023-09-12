@@ -8,43 +8,42 @@ import aether.lib.graphics.ShaderVarBuffer
 
 import scala.collection.mutable.LinkedHashMap
 
-import FragmentShader.RenderParams
+import FragmentShader.*
 import aether.core.graphics.ShaderProgram
 import aether.core.types.Mat3F
 import aether.core.graphics.Graphics
 import aether.lib.graphics.Mesh
+import aether.lib.graphics.ReloadShader
+import aether.core.types.Vec2F
+import aether.core.types.Vec4F
+import aether.lib.graphics.Shader
+import aether.lib.canvas.Canvas
+import aether.core.graphics.Texture
+import aether.core.types.Vec4I
+import aether.core.types.VecExt.toVec4F
 
 object FragmentShader {
   
-  private var mesh_ : Mesh = null
-  
-  def mesh(using Graphics) = {
-    if (mesh_ == null) mesh_ = createMesh
-    mesh_
-  }
-
-  def createMesh(using Graphics): Mesh = {
-    val sizeX = 1 //Global.defaultSize
-    val sizeY = 1 //Global.defaultSize
-    val mesh = Mesh.factory.staticPT(4)
-    mesh.positions.put2F(-1, 1)
-    mesh.positions.put2F(1, 1)
-    mesh.positions.put2F(-1, -1)
-    mesh.positions.put2F(1, -1)
-    mesh.texCoords.put2F(0, sizeY)
-    mesh.texCoords.put2F(sizeX, sizeY)
-    mesh.texCoords.put2F(0, 0)
-    mesh.texCoords.put2F(sizeX, 0)
-    mesh
-  }
-
-  case class RenderParams(resolution: Vec2I, viewport: RectI, tx: Mat3F)
-
+  case class ShaderParams(
+    iQuadS: Int,
+    iQuadSize: Int, 
+    bufferTexture: Texture,
+    iResolution: Vec2F,
+    iViewport: Vec4F,
+    iTransform: Mat3F,
+    iFrame: Int,
+    iTime: Float,
+    // iMouse: Vec2F,
+    iIterations: Int,
+    // iMVP: Mat4F,
+    // iCamera: Mat4F,
+    // iChannel0: Texture,
+  )
 }
 
-class FragmentShader()(using Graphics) {
-
-  var pass: ShaderPass = new ShaderPass(null, null)
+class FragmentShader(g: Graphics) {
+  given Graphics = g
+  var pass: ReloadShader = ReloadShader(g)
 
   var frame = 0
   val startTime = System.currentTimeMillis()
@@ -64,42 +63,40 @@ class FragmentShader()(using Graphics) {
   val defines = LinkedHashMap[String, String]()
 
   def setSource(vertShader: String, fragShader: String) = {
-    //TODO Replace define declarations in sources
-    pass.sourceVertex = /*header + */vertShader
-    pass.sourceFragment = /*header + */fragShader
-    pass.create()
+    pass.create(Some(vertShader), Some(fragShader))
   }
 
-  def render(params: RenderParams) = {
+
+
+  val viewMesh = Shader.createMeshUnit2D()
+
+
+  def render(resolution: Vec2I, viewport: RectI, tx: Mat3F, bufferTex: Texture) = {
+    val params = ShaderParams(
+      0,
+      bufferTex.size.x,
+      bufferTex,
+      resolution.toVec2F,
+      viewport.bounds.toVec4F,
+      tx,
+      frame,
+      (System.currentTimeMillis - startTime) * 0.001f,
+      100)
+
     assert(pass.ready, "Incomplete ShaderPass")
     frame = frame + 1
 
-    val program = pass.program.get
-    FragmentShader.mesh.toProgram(program)
+    val program = pass.shader.get.program
+    viewMesh.toProgram(program)
 
-    program.uniform("iResolution").foreach(_.put2F(params.resolution.toVec2F))
-    program.uniform("iFrame").foreach(_.putI(frame))
-    program.uniform("iTime").foreach(_.putF((System.currentTimeMillis - startTime) * 0.001f))
-    //    program.uniform("iMouse").foreach(_.put2F(mousePos))
-
-    program.uniform("iViewport").foreach(_.put4F(params.viewport.bounds.toVec4F))
-    program.uniform("iTransform").foreach(_.putMat3F(params.tx))
-
-    program.uniform("iIterations").foreach(_.putI(100))
-
-    //program.uniform("iMVP").foreach(_.putMat4F(mvp))
-    //program.uniform("iCamera").foreach(_.putMat4F(camera))
-    //    for (i <- 0 until channels.size) {
-    //      program.textureUnit(i, channels(i))
-    //      program.uniform(s"iChannel$i").get.putI(i)
-    //    }
-
+    pass.shader.get.initialize(params)
+    
     program.draw(ShaderProgram.Mode.TriangleStrip, 0, 4)
 
   }
 
   def getState(): Seq[String] = {
-    val program = pass.program.get
+    val program = pass.shader.get.program
     val unis = for (name <- program.uniforms) yield program.uniform(name).get.toString()
     val att = for (name <- program.attributes) yield program.attribute(name).get.toString()
     (unis ++ att).toSeq

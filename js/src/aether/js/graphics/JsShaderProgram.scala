@@ -24,10 +24,8 @@ class JsShaderProgram(vertexShader: JsShaderObject, fragmentShader: JsShaderObje
     gl: GL
 ) extends ShaderProgram {
 
-  // --
-  def bindAttribute(index: Int, attributeName: String): Unit = assert(false, "bindAttribute not implemented")
-
-  def error: Option[String] = ???
+  def error: Option[String] = _error
+  var _error: Option[String] = Some("unlinked")
 
   val glProgram = gl.createProgram()
 
@@ -53,18 +51,24 @@ class JsShaderProgram(vertexShader: JsShaderObject, fragmentShader: JsShaderObje
     gl.deleteProgram(glProgram)
   }
 
-  def link() = {
-    gl.linkProgram(glProgram)
+  def check(parameter: Int, operation: String): Boolean = {
 
-    gl.validateProgram(glProgram)
     val ok = gl.getProgramParameter(glProgram, GL.VALIDATE_STATUS).asInstanceOf[Boolean]
-    Log("Shader program result: " + ok)
     if (!ok) {
-      errorBuffer.append("Shader program validation failed:\n")
+      errorBuffer.append(s"Shader program $operation failed:\n")
       val log = gl.getProgramInfoLog(glProgram)
-      Log(log)
-      assert(false, errorBuffer)
+      _error = Some(errorBuffer.toString)
     }
+    ok
+  }
+
+  def link(): Unit = {
+
+    gl.linkProgram(glProgram)
+    if (check(GL.LINK_STATUS, "link")) return
+    gl.validateProgram(glProgram)
+    if (check(GL.VALIDATE_STATUS, "validate")) return
+
     // validate that all attributes are bound
     val attributeCount = gl.getProgramParameter(glProgram, GL.ACTIVE_ATTRIBUTES).asInstanceOf[Int]
     Log(s"Attributes in shader program $glProgram: $attributeCount")
@@ -92,7 +96,11 @@ class JsShaderProgram(vertexShader: JsShaderObject, fragmentShader: JsShaderObje
       Log(s"  Uniform $i, $uniform")
     }
     uniformMap = unis.toMap
+    _error = None
   }
+
+  // --
+  def bindAttribute(index: Int, attributeName: String): Unit = assert(false, "bindAttribute not implemented")
 
   def textureUnit(textureUnit: Int, texture: Texture) = {
     texture.asInstanceOf[JsTexture].bind(textureUnit)

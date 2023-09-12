@@ -11,7 +11,7 @@ class ResourceTest extends AnyFunSuite {
     val r2 = stringRes.flatMap { head =>
       Resource(head + " next")
     }
-    assert(r2() == "init next")
+    assert(r2.get == "init next")
   }
   test("Flatmap error") {
     val re = stringRes.flatMap { head =>

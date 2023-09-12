@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL43._
 
 import java.nio.IntBuffer
 import scala.collection.mutable
+import ShaderProgram.*
 
 object JvmShaderProgram {
   val factory = new Resource.Factory[ShaderProgram, ShaderProgram.Config] {
@@ -31,10 +32,8 @@ class JvmShaderProgram(config: Config)(using factory: ShaderProgramFactory) exte
   val vertexShader = config.vertexShader.asInstanceOf[JvmShaderObject]
   val fragmentShader = config.fragmentShader.asInstanceOf[JvmShaderObject]
 
-  def bindAttribute(index: Int, attributeName: String): Unit = ???
-
   def error: Option[String] = _error
-  var _error: Option[String] = None
+  var _error: Option[String] = Some("unlinked")
 
   val glProgram = glCreateProgram()
   val ENCODING = "UTF-8"
@@ -60,25 +59,26 @@ class JvmShaderProgram(config: Config)(using factory: ShaderProgramFactory) exte
     glDeleteProgram(glProgram)
   }
 
-  def link() = {
+  def link(): Unit = {
 
-    def check(parameter: Int, operation: String) = {
-      if (glGetProgrami(glProgram, parameter) == GL_FALSE) {
+    def check(parameter: Int, operation: String): Boolean = {
+      val error = glGetProgrami(glProgram, parameter) == GL_FALSE
+      if (error) {
         errorBuffer.append(s"Shader program $operation failed:\n")
         val log = glGetProgramInfoLog(glProgram)
         Log("Info: " + log)
         errorBuffer.append(log)
         //assert(false, errorBuffer)
         _error = Some(errorBuffer.toString())
-        throw new RuntimeException("Failed to link shader\n" + errorBuffer)
       }
-
+      error
     }
-
-    glLinkProgram(glProgram)
-    check(GL_LINK_STATUS, "link")
+    
+    glLinkProgram(glProgram);
+    if (check(GL_LINK_STATUS, "link")) return
     glValidateProgram(glProgram)
-    check(GL_VALIDATE_STATUS, "validate")
+    if (check(GL_VALIDATE_STATUS, "validate")) return
+
     val attLen = glGetProgrami(glProgram, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH)
     val uniLen = glGetProgrami(glProgram, GL_ACTIVE_UNIFORM_MAX_LENGTH)
 
@@ -111,7 +111,11 @@ class JvmShaderProgram(config: Config)(using factory: ShaderProgramFactory) exte
       //Log("  Uniform " + i + ", " + name);
     }
     uniformMap = unis.toMap
+    _error = None
   }
+
+  def bindAttribute(index: Int, attributeName: String): Unit = ???
+
 
   def textureUnit(textureUnit: Int, texture: Texture) = {
     texture.asInstanceOf[JvmTexture].bind(textureUnit)
@@ -121,7 +125,10 @@ class JvmShaderProgram(config: Config)(using factory: ShaderProgramFactory) exte
 
   override def uniform(name: String): Option[Var] = uniformMap.get(name)
 
-  override def attribute(name: String): Option[Var] = attribute(attributeIndex(name))
+  override def attribute(name: String): Option[Var] = {
+    if (attribNames.contains(name)) attribute(attributeIndex(name))
+    else None
+  }
 
   override def hasAttribute(name: String): Boolean = attribNames.contains(name)
 
@@ -191,6 +198,7 @@ class JvmShaderProgram(config: Config)(using factory: ShaderProgramFactory) exte
   }
 
   def draw(mode: ShaderProgram.Mode, index: Int, length: Int) = {
+    assert(error.isEmpty, error.get)
     for (attrib <- attributeMap.values) {
       if (attrib.debugSize >= 0) {
         assert(attrib.debugSize == length, s"Invalid attribute buffer size in ${attrib.name}: ${attrib.debugSize}, $length")

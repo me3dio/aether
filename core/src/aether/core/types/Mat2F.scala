@@ -10,7 +10,7 @@ object Mat2F {
     a00, a10,
     a01, a11)
 
-  val identity = diagonal(1)
+  val Identity = diagonal(1)
   def diagonal(s: Float) = new Mat2F(s, 0, 0, s)
   def diagonal(x: Float, y: Float, z: Float) = new Mat2F(x, 0, 0, y)
   def rotation(rads: Float) = {

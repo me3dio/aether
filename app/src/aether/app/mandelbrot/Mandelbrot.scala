@@ -106,7 +106,9 @@ class Mandelbrot(val platform: Platform) extends Module {
       Seq("mandelbrot.vs", "mandelbrot.fs").map(resources.loadString)
     } map { case Seq(vs, fs) =>
       Log(s"Shader loaded")
-      ShaderProgram(vs, fs)
+      val program = ShaderProgram(vs, fs)
+      assert(program.error.isEmpty, program.error.get)
+      program
     }
 
     // val program = ShaderProgram(Shaders.vertex, Shaders.fragment)
@@ -124,7 +126,7 @@ class Mandelbrot(val platform: Platform) extends Module {
     def resize(size: Vec2I)= {}
 
     override def paint() = {
-      program.get.foreach { program =>
+      program.option.foreach { program =>
         program.attributeBuffer("a_position", vertexBuffer.buffer, vertexBuffer.numComponents)
         program.uniform("iter").get.putI(iterations)
         program.uniform("scale").get.put2F(scale / size.y * size.x, scale)

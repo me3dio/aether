@@ -19,6 +19,11 @@ object ShaderProgram {
       fragmentShader: ShaderObject
   ) extends Resource.Config
 
+  // enum LinkResult {
+  //   case Ok
+  //   case Error(message: String)
+  // }
+
   def apply(vertexShader: ShaderObject, fragmentShader: ShaderObject)(using graphics: Graphics): ShaderProgram =
     graphics.shaderProgramFactory.create(Config(vertexShader, fragmentShader))
 
@@ -31,6 +36,9 @@ object ShaderProgram {
 
 trait ShaderProgram extends NativeResource[ShaderProgram, ShaderProgram.Config] {
   def error: Option[String]
+
+  // def isLinked = error.isEmpty
+  // def link(): LinkResult
 
   def bindAttribute(index: Int, attributeName: String): Unit
 

@@ -16,10 +16,6 @@ object ShaderVarBuffer {
   def apply(flags: Int, capacity: Int, numComponents: Int)(using graphics: Graphics): ShaderVarBuffer = {
     new ShaderVarBuffer(ShaderBuffer(flags, capacity * numComponents), numComponents)
   }
-  //TODO: new ShaderBuffer Config
-//  def apply(target: Target, dataType: DataType, flags: Int, capacity: Int, numComponents: Int): ShaderVarBuffer = {
-//    new ShaderVarBuffer(ShaderBuffer.create(target, dataType, flags, capacity), numComponents)
-//  }
 
 }
 

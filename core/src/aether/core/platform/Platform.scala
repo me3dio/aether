@@ -11,6 +11,7 @@ import Platform.*
 object Platform {
 
   case class Config(
+    version: String = "N/A",
     updateStep: Int = 0,
     projectPackages: Map[String, String] = Map(),
   )
@@ -32,16 +33,14 @@ trait Platform(config: Config, modules: Seq[Module]) {
   val dispatcher: Dispatcher = new Dispatcher()
   given Dispatcher = dispatcher
 
+  /** Platform name. */
   val name: Name
-  val log: Log
+  val version = config.version
+
+  // val log: Log
   val base: Base
 
-  // protected val resourceBase: Base
   def resource(source: Any): Base = ???
-  // {
-  //   val path = source.getClass().getName().split("\\.").dropRight(1).mkString("/")
-  //   resourceBase.base(path)
-  // }
 
   private var running = true
 
@@ -69,6 +68,8 @@ trait Platform(config: Config, modules: Seq[Module]) {
     val startTime = System.currentTimeMillis()
     var updateTime = startTime
 
+    // JVM runs in this thread and returns when app exits
+    // JS starts a render loop and returns immediately
     run {
       var processEvents = true
       while (processEvents) {
@@ -96,8 +97,6 @@ trait Platform(config: Config, modules: Seq[Module]) {
       }
       running
     }
-    // JVM runs in this thread and returns when app exits
-    // JS starts a render loop and returns immediately
   }
 
   def run(loop: => Boolean): Unit

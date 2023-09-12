@@ -43,7 +43,7 @@ class CanvasApp(val platform: Platform) extends Module {
   val res = Resources(platform)
   res.allRes.onChange { r =>
     r.error.map(assert(false, _))
-    ui = Some(CanvasWidget(platform, res, state, size.toVec2F))
+    ui = Some(CanvasWidget(platform, g, res, state, size.toVec2F))
     uiEvents = Some(new WidgetEvents(ui.get))
   }
 
@@ -59,7 +59,7 @@ class CanvasApp(val platform: Platform) extends Module {
         // val paintEvent = Canvas.Render(canvas, RectF(Vec2F.Zero, disp.size.toVec2F))
         // ui.event(paintEvent)
         ui.foreach(_.paint(canvas))
-        font.get.foreach(font => canvas.drawString(Vec2F.Zero, font, "Hello World"))
+        font.option.foreach(font => canvas.drawString(Vec2F.Zero, font, "Hello World"))
         canvas.flush()
         // Logo.paint()
       case e: WebSocket.WebSocketEvent =>

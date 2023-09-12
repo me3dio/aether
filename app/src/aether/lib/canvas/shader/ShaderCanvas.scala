@@ -38,6 +38,10 @@ class ShaderCanvas(var view: RectF, val tx: Tx2FAxis = Tx2FAxis.Identity)(using 
 
   var renderer: Option[Renderer] = None
 
+  def resize(size: Vec2I): Unit = {
+    view = RectF(Vec2F.Zero, size.toVec2F)
+  }
+
   def copy(view: RectF, tx: Tx2FAxis): Canvas = {
     // Log(s"ShaderCanvas($view, $tx)")
     new ShaderCanvas(view, tx)

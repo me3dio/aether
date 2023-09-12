@@ -6,8 +6,8 @@ import aether.core.types.Vec2F
 import aether.core.types.RectF
 
 object Transform2F {
-  def identity = Transform2F(Mat2F.identity, Vec2F.Zero)
-  def translation(x: Float, y: Float) = Transform2F(Mat2F.identity, Vec2F(x, y))
+  def identity = Transform2F(Mat2F.Identity, Vec2F.Zero)
+  def translation(x: Float, y: Float) = Transform2F(Mat2F.Identity, Vec2F(x, y))
   def rotation(rads: Float) = new Transform2F(Mat2F.rotation(rads), Vec2F.Zero)
 
   def apply(mat: Mat2F, trans: Vec2F) = new Transform2F(mat, trans)

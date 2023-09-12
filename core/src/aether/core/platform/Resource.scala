@@ -35,7 +35,7 @@ object Resource {
       val res = loadThis(ref, config)
       res.onChange { r =>
         r.error.map(e => sys.error(s"Error loading resource $ref: $e"))
-        resources += r()
+        resources += r.get
       }
       res
     }
@@ -83,7 +83,7 @@ object Resource {
       if (error.isDefined) {
         res.error = error.get
       } else {
-        res.set(seq.map(_()))
+        res.set(seq.map(_.get))
       }
     }
     if (loadCount == 0) {
@@ -122,13 +122,13 @@ class Resource[T]() {
     case _                => None
   }
 
-  def get: Option[T] = state match {
+  def option: Option[T] = state match {
     case State.Loaded[T](value) => Some(value)
     case _                      => None
   }
 
-  def apply(): T = get.get
-  def isLoaded: Boolean = get.isDefined
+  def get: T = option.get
+  def isLoaded: Boolean = option.isDefined
 
   def set(newRes: T)(using dispatcher: Dispatcher): Unit = {
     assert(state == State.Loading())
@@ -177,6 +177,7 @@ class Resource[T]() {
           _.state match {
             case State.Loaded(value) => res.set(value)
             case State.Error(msg)    => res.error = msg
+            case State.Loading() => ??? /// should not happen
           }
         }
       case State.Loading() => onChange(_ => flatMap(f, res))

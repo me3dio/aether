@@ -22,7 +22,7 @@ object Mat4F {
 
   def diagonal(s: Float) = new Mat4F(s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, s)
 
-  val identity = diagonal(1)
+  val Identity = diagonal(1)
 
   def fromTransform(mat: Mat3F, translate: Vec3F): Mat4F = {
     Mat4F(

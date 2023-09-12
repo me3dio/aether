@@ -14,13 +14,13 @@ import aether.lib.widget.WidgetEvent.*
 import aether.core.types.VecExt.*
 import aether.core.input.KeyEvent.*
 
-class CanvasWidget(platform: Platform, res: Resources, state: State, var size: Vec2F)(using g: Graphics) extends Widget {
+class CanvasWidget(platform: Platform, graphics: Graphics, res: Resources, state: State, var size: Vec2F)(using g: Graphics) extends Widget {
   val name = "CanvasWidget"
   // val left = config.left
   // val right = config.right
 
-  val shader = new FragmentShader()
-  shader.setSource(res.vertSource.get.get, res.fragSource.get.get)
+  val shader = new FragmentShader(graphics)
+  shader.setSource(res.vertSource.get, res.fragSource.get)
 
   val scroll = Scroll.create() {
     RectF(Vec2F.Zero, size)
@@ -65,16 +65,13 @@ class CanvasWidget(platform: Platform, res: Resources, state: State, var size: V
   def update() = {}
 
   def paint(renderer: Canvas): Unit = {
-    val prog = shader.pass.program.get
+    val prog = shader.pass.shader.get.program
     for (canvas <- Seq(state.baseCanvas, state.changeCanvas, state.paintCanvas)) {
       if (canvas.canvasModified) {
         canvas.serializeQuad()
       }
-      prog.uniform("iQuadS").foreach(_.putI(0))
-      prog.uniform("iQuadSize").foreach(_.putI(canvas.bufferTex.size.x))
-      prog.textureUnit(0, canvas.bufferTex)
       val tx = scroll.txView.scaled(canvas.grid.radius).toMat3F
-      shader.render(FragmentShader.RenderParams(size.toVec2I, renderer.view.toRectI, tx))
+      shader.render(size.toVec2I, renderer.view.toRectI, tx, canvas.bufferTex)
     }
   }
 
