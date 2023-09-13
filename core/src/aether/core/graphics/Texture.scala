@@ -99,7 +99,7 @@ trait Texture extends NativeResource[Texture, Texture.Config] with RenderTarget 
 
   def area = RectI(0, 0, size.x, size.y)
 
-  def format: Texture.Format
+  final def format: Texture.Format = config.format
 
   /** Direct buffer access. */
   def buffer: Option[NativeBuffer]

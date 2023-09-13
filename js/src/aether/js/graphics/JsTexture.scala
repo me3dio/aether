@@ -130,11 +130,6 @@ object JsTexture {
 
 class JsTexture(val config: Config)(using graphics: Graphics, factory: TextureFactory) extends Texture {
 
-  override val format = config.format
-
-  // def this(image: Image)(using factory: TextureFactory, gl: GL) = {
-  //   this(Vec2I(image.width, image.height))
-  // }
   val gl = graphics.asInstanceOf[JsGraphics].gl
 
   val glTexture = gl.createTexture()

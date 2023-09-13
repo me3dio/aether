@@ -42,7 +42,7 @@ object JvmTexture {
         }
         data
       }
-      val r = new JvmTexture(config, data)
+      val r = new JvmTexture(config.copy(buffer = Some(data.buffer)))
       r
     }
 
@@ -52,7 +52,8 @@ object JvmTexture {
         val stream = new BufferedInputStream(new ByteArrayInputStream(buffer.toByteArray))
         val data = fromStream(stream, config.fileFormat, config.format)
         assert(data != null, "Not found: " + ref)
-        new JvmTexture(config.copy(size = Some(Vec2I(data.sizeX, data.sizeY))), data)
+        val newConfig = config.copy(size = Some(Vec2I(data.sizeX, data.sizeY)), buffer = Some(data.buffer))
+        new JvmTexture(newConfig)
       }
     }
 
@@ -90,12 +91,9 @@ object JvmTexture {
   }
 }
 
-class JvmTexture(val config: Config, data: TextureData)(using g: Graphics, factory: TextureFactory) extends Texture {
+class JvmTexture(val config: Config)(using g: Graphics, factory: TextureFactory) extends Texture {
 
-  override val format = data.format
-
-  override val isPremultiplied = data.isPremultiplied
-  val buffer: Option[NativeBuffer] = Some(data.buffer)
+  val buffer: Option[NativeBuffer] = config.buffer
 
   val glTextureId = glGenTextures()
 

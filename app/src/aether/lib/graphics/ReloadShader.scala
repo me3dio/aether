@@ -25,20 +25,19 @@ class ReloadShader(graphics: Graphics) {
     val vertex = ShaderObject(ShaderObject.Type.Vertex, sourceVertex.get)
     val fragment = ShaderObject(ShaderObject.Type.Fragment, sourceFragment.get)
     val program = ShaderProgram(vertex, fragment)
+    shader = Some(Shader(vertex, fragment, program))
     if (program.error.isDefined) {
-      Log("Compilation failed:\n" + program.error.get.split("\n").mkString("  ", "\n  ", "\n"))
-      vertex.release()
-      fragment.release()
+      Log("Compilation failed:\n" + program.error)
       release()
       false
     } else {
-      shader = Some(Shader(vertex, fragment, program))
       true
     }
   }
 
   def release() = {
     shader.foreach(_.release())
+    shader = None
   }
 
 }
