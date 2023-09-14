@@ -87,6 +87,11 @@ object ShaderBuffer {
     //def target = flags & Target.Mask
     def dynamic = (flags & Size.Dynamic)!=0
   }
+  
+  def apply(config: Config)(using graphics: Graphics): ShaderBuffer = {
+    graphics.shaderBufferFactory.create(config)
+  }
+
 }
 
 /**
