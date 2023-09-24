@@ -39,6 +39,7 @@ trait Platform(config: Config, modules: Seq[Module]) {
 
   // val log: Log
   val base: Base
+  val env: Env
 
   def resource(source: Any): Base = ???
 

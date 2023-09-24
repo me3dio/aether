@@ -13,6 +13,7 @@ import java.nio.file.Paths
 
 import Platform.*
 import aether.core.base.Base
+import aether.core.platform.Env
 
 class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDisplay)) {
   val name = Platform.Name.Jvm
@@ -24,6 +25,13 @@ class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDis
 
   val wd = Paths.get("").toAbsolutePath().toString().replaceAll("\\\\", "/")
   val base = new FileBase(wd)
+  val env = new Env {
+    def getString(key: String): String = {
+      val value = System.getenv(key)
+      assert(value != null, s"Environment variable $key not found")
+      value
+    }
+  }
 
   override def resource(source: Any): Base = {
     val className = source.getClass().getName()
