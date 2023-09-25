@@ -21,6 +21,20 @@ object Shader {
     mesh
   }
 
+  def apply(vertexSrc: String, fragmentSrc: String)(using Graphics): Option[Shader] = {
+    val vertex = ShaderObject(ShaderObject.Type.Vertex, vertexSrc)
+    val fragment = ShaderObject(ShaderObject.Type.Fragment, fragmentSrc)
+    val program = ShaderProgram(vertex, fragment)
+    val shader = new Shader(vertex, fragment, program)
+    if (program.error.isDefined) {
+      shader.release()
+      None
+    } else {
+      Some(shader)
+    }
+    ???
+  }
+
 }
 
 class Shader(vertex: ShaderObject, fragment: ShaderObject, val program: ShaderProgram) {

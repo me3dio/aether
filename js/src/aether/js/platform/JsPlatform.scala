@@ -10,6 +10,8 @@ import aether.js.network.JsHttpClient
 import Platform.*
 
 class JsPlatform extends Platform(Config(), Seq(JsDisplay)) {
+  given Platform = this
+
   val name = Platform.Name.Js
   val log = new Log {
     def apply(message: String) = {
@@ -20,7 +22,7 @@ class JsPlatform extends Platform(Config(), Seq(JsDisplay)) {
 
   val displayFactory = JsDisplay.factory(dispatcher)
   val httpClientFactory = JsHttpClient.factory(dispatcher)
-  val webSocketFactory = ???
+  val webSocketFactory = JsWebSocket.factory
 
   val http = JsHttpClient()
   val origin = dom.window.location.origin

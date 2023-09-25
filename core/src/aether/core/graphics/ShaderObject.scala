@@ -18,5 +18,5 @@ object ShaderObject {
 }
 
 trait ShaderObject extends NativeResource[ShaderObject, ShaderObject.Config] {
-  
+  def error: Option[String]
 }

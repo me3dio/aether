@@ -25,7 +25,7 @@ class ReloadShader(graphics: Graphics) {
     val vertex = ShaderObject(ShaderObject.Type.Vertex, sourceVertex.get)
     val fragment = ShaderObject(ShaderObject.Type.Fragment, sourceFragment.get)
     val program = ShaderProgram(vertex, fragment)
-    shader = Some(Shader(vertex, fragment, program))
+    shader = Some(new Shader(vertex, fragment, program))
     if (program.error.isDefined) {
       Log("Compilation failed:\n" + program.error)
       release()

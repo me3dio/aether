@@ -12,7 +12,6 @@ import org.lwjgl.opengl.GL30._
 import org.lwjgl.opengl.GL31._
 import org.lwjgl.opengl.GL41._
 
-
 object JvmShaderObject {
   val factory = new Resource.Factory[ShaderObject, ShaderObject.Config] {
     given ShaderObjectFactory = this
@@ -21,6 +20,10 @@ object JvmShaderObject {
 }
 
 class JvmShaderObject(config: Config)(using factory: ShaderObjectFactory) extends ShaderObject {
+
+  def error: Option[String] = _error
+  var _error: Option[String] = Some("uncompiled")
+
   def release() = {
     factory.released(this)
     glDeleteShader(glShader)
@@ -28,7 +31,7 @@ class JvmShaderObject(config: Config)(using factory: ShaderObjectFactory) extend
 
   val glShaderType = config.typ match {
     case Fragment => GL_FRAGMENT_SHADER
-    case Vertex => GL_VERTEX_SHADER
+    case Vertex   => GL_VERTEX_SHADER
   }
 
   val glShader = glCreateShader(glShaderType)
@@ -42,9 +45,14 @@ class JvmShaderObject(config: Config)(using factory: ShaderObjectFactory) extend
     glCompileShader(glShader)
     val compiled = new Array[Int](1)
     glGetShaderiv(glShader, GL_COMPILE_STATUS, compiled)
-    val ok = compiled(0)!=0
-    if (!ok) throw new RuntimeException(s"Failed to compile ${config.typ} shader:\n" + getLog())
-    true
+    val ok = compiled(0) != 0
+    if (ok) {
+      _error = None
+      true
+    } else {
+      _error = Some(s"Failed to compile ${config.typ} shader:\n" + getLog())
+      false
+  }
   }
 
   def getLog(): String = {

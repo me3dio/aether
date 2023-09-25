@@ -16,6 +16,8 @@ object JsShaderObject {
 }
 
 class JsShaderObject(typ: Type, source: String)(using factory: ShaderObjectFactory, gl: GL) extends ShaderObject {
+  def error: Option[String] = _error
+  var _error: Option[String] = Some("uncompiled")
 
   val glShaderType = typ match {
     case Type.Fragment => GL.FRAGMENT_SHADER
@@ -33,11 +35,12 @@ class JsShaderObject(typ: Type, source: String)(using factory: ShaderObjectFacto
   def compile(): Boolean = {
     gl.compileShader(glShader)
     val compiled = gl.getShaderParameter(glShader, GL.COMPILE_STATUS).asInstanceOf[Boolean]
-    if (compiled) true
-    else {
+    if (compiled) {
+      _error = None
+      true
+    } else {
       val log = gl.getShaderInfoLog(glShader)
-      Log(s"Failed to compile shader")
-      Log(log)
+      _error = Some(s"Failed to compile shader\n$log")
       false
     }
   }
@@ -46,6 +49,5 @@ class JsShaderObject(typ: Type, source: String)(using factory: ShaderObjectFacto
     factory.released(this)
     gl.deleteShader(glShader)
   }
-
 
 }
