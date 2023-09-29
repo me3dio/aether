@@ -17,8 +17,8 @@ object WebSocket {
     def socket: WebSocket
   }
   case class OnConnect(socket: WebSocket) extends WebSocketEvent
-  case class OnStringMessage(socket: WebSocket, message: String) extends WebSocketEvent
-  case class OnBufferMessage(socket: WebSocket, message: ByteBuffer) extends WebSocketEvent
+  case class OnTextMessage(socket: WebSocket, message: String) extends WebSocketEvent
+  case class OnBinaryMessage(socket: WebSocket, message: ByteBuffer) extends WebSocketEvent
   case class OnError(socket: WebSocket, message: String) extends WebSocketEvent
   case class OnClose(socket: WebSocket, code: Int, reason: String) extends WebSocketEvent
 }

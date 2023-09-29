@@ -39,10 +39,10 @@ class JsWebSocket(config: Config)(using platform: Platform, factory: WebSocketFa
   }
   socket.onmessage = { event =>
     if (event.data != null) event.data match {
-      case s: String => handler(OnStringMessage(this, s))
+      case s: String => handler(OnTextMessage(this, s))
       case b: Blob =>
         b.arrayBuffer().toFuture.map {
-          d => handler(OnBufferMessage(this, DynamicBuffer(new Int8Array(d).toArray)))
+          d => handler(OnBinaryMessage(this, DynamicBuffer(new Int8Array(d).toArray)))
         }
       case d => ???
     }

@@ -41,9 +41,9 @@ class Sync(state: State, handler: Module)(using platform: Platform) {
         }
       case m: OnConnect =>
         // socket.send("canvas")
-      case m: OnStringMessage =>
+      case m: OnTextMessage =>
         Log(s"Received message $m")
-      case OnBufferMessage(socket, buffer) =>
+      case OnBinaryMessage(socket, buffer) =>
         // Log(s"Received buffer $buffer")
         val serial = buffer.readI() //TODO merge quads based on serial
         val grid = QuadGrid.decode(buffer)
