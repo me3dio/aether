@@ -14,6 +14,7 @@ import java.nio.file.Paths
 import Platform.*
 import aether.core.base.Base
 import aether.core.platform.Env
+import io.github.cdimascio.dotenv.Dotenv
 
 class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDisplay)) {
   val name = Platform.Name.Jvm
@@ -26,11 +27,10 @@ class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDis
   val wd = Paths.get("").toAbsolutePath().toString().replaceAll("\\\\", "/")
   val base = new FileBase(wd)
   val env = new Env {
-    def getString(key: String): String = {
-      val value = System.getenv(key)
-      assert(value != null, s"Environment variable $key not found")
-      value
-    }
+    // Load .env to system properties
+    val dot = Dotenv.configure().systemProperties().load()
+
+    def getString(key: String): Option[String] = Option(dot.get(key))
   }
 
   override def resource(source: Any): Base = {
@@ -51,5 +51,6 @@ class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDis
 
   def run(loop: => Boolean): Unit = {
     while (loop) Thread.`yield`()
+    System.exit(0)
   }
 }

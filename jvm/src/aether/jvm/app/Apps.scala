@@ -19,7 +19,7 @@ object Apps {
     "server.jvm" -> "server"
   )
 
-  val platform = JvmPlatform(Config(projectPackages = projectPackages))
+  lazy val platform = JvmPlatform(Config(projectPackages = projectPackages))
 
   def launch(app: Module) = {
     platform.runApp(app)

@@ -60,6 +60,7 @@ object jvm extends ScalaModule {
     }
     Agg(
       ivy"org.java-websocket:Java-WebSocket:1.5.3", // WebSocket
+      ivy"io.github.cdimascio:dotenv-java:2.3.2",
     ) ++ Agg("lwjgl", "lwjgl-glfw", "lwjgl-opengl", "lwjgl-opengles").flatMap {
       case module =>
         Seq(

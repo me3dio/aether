@@ -28,14 +28,14 @@ class JsPlatform extends Platform(Config(), Seq(JsDisplay)) {
   val origin = dom.window.location.origin
   val base = new HttpBase(http, origin)
   val env = new Env {
-    def getString(key: String): String = {
+    def getString(key: String): Option[String] = {
       val value = dom.window.localStorage.getItem(key)
       //TODO: for node, check this
       val env = js.Dynamic.global.process.env(key).asInstanceOf[js.UndefOr[String]]
-      assert(value != null, s"Environment variable $key not found")
-      value
+      Option(value)
     }
   }
+  
   val resourceBase  = new HttpBase(http, s"$origin/resources")
 
   def run(loop: => Boolean): Unit = {
