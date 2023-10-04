@@ -7,27 +7,15 @@ import org.http4s.MediaType
 import org.http4s.dsl.io._
 import org.http4s.headers.`Content-Type`
 import org.http4s.StaticFile
-import scalatags.Text.all._
-import scalatags.Text.tags2.title
 import fs2.io.file.Path
 
 class WebAppService {
   val logger = org.log4s.getLogger
 
-  def page(app: String, pageTitle: String) = {
-    html(margin := "0 !important", padding := "0 !important")(
-      head(meta(charset := "UTF-8"), title(pageTitle), link(rel := "stylesheet", href := "/static/style.css")),
-      body(margin := "0 !important", padding := "0 !important")(
-        // canvas(id := "display", width := "1024", height := "512"),
-        script(`type` := "text/javascript", src := "/scripts/main.js"),
-        script(s"window.onload = function(){ App.$app(); }")
-      )
-    ).toString
-  }
 
   val services = HttpRoutes.of[IO] {
     case GET -> Root / "app" / app =>
-      Ok(page(app, app), `Content-Type`(MediaType.text.html))
+      Ok(AppPage(app, app), `Content-Type`(MediaType.text.html))
     case req @ GET -> Root / "scripts" / scriptFile =>
       logger.debug(s"Get script $scriptFile")
       StaticFile.fromPath(Path(s"out/js/fastLinkJS.dest/$scriptFile"), Some(req)).getOrElseF {
