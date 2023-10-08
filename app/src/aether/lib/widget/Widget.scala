@@ -17,24 +17,15 @@ object Widget {
 
   // case class SetViewport(view: RectF) extends Event
 
-  class Node {
-    
-  }
-  
+  class Node {}
+
+  case class Resize(size: Vec2F) extends Event
+
 }
 
 trait Widget extends Visual with Module {
 
-  /** Pich child Visuals. */
-  // def pick(transform: Vec2F, pos: Vec2F): Seq[PickResult] = Seq()
-
-  /** Resize widget to minimum size. */
-  // def resizeMinimum(): Unit = {}
-
-  /**
-   * Resize widget to given size.
-   */
-  // def resize(containerSize: Vec2F): Unit ={}
-  
+  /** Resize widget to given size. */
+  def resize(containerSize: Vec2F): Unit = {}
 
 }

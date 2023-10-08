@@ -24,9 +24,9 @@ class Console(val font: Font) extends Widget {
 
   val padding = 1
 
-  val text = new EditableFlow(font)
-  text.items += Text("Test1")
-  text.items += Text("Test2")
+  val flow = new EditableFlow(font)
+  flow.items += Text("Test1")
+  flow.items += Text("Test2")
   modified()
   // def event(event: Visual.RenderEvent) = ???
 
@@ -37,15 +37,18 @@ class Console(val font: Font) extends Widget {
 
   def event(event: Event) = {
     event match {
+      case Widget.Resize(newSize) =>
+        this.size = newSize
+        flow.event(event)
       case e: Log.LogEvent =>
-        text.items += new Text(e.toString)
+        flow.items += new Text(e.toString)
       case _ =>
     }
   }
 
   def paint(canvas: Canvas) = {
     var pos = Vec2F.Zero
-    val visuals = text.visuals
+    val visuals = flow.visuals
 
   }
 }

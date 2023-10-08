@@ -38,6 +38,11 @@ class JsPlatform extends Platform(Config(), Seq(JsDisplay)) {
   }
   
   val resourceBase  = new HttpBase(http, s"$origin/resources")
+  def resource(source: Any) = {
+    val className = source.getClass().getName()
+    val classPath = className.split("\\.").dropRight(1).mkString("/")
+    resourceBase.base(classPath)
+  }
 
   def run(loop: => Boolean): Unit = {
     def frame(time: Double): Unit = {

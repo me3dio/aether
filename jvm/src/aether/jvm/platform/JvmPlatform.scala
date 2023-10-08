@@ -22,8 +22,10 @@ class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDis
   val log = new Log {
     def apply(message: LogEvent) = {
       println(message)
+      dispatcher.add(message)
     }
   }
+  Log.global = log
 
   val wd = Paths.get("").toAbsolutePath().toString().replaceAll("\\\\", "/")
   val base = new FileBase(wd)
@@ -34,7 +36,7 @@ class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDis
     def getString(key: String): Option[String] = Option(dot.get(key))
   }
 
-  override def resource(source: Any): Base = {
+  def resource(source: Any): Base = {
     val className = source.getClass().getName()
     val path = config.projectPackages.collectFirst {
       case (pack, path) if className.startsWith(pack) => s"$path/src"

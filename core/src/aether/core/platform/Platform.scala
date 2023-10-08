@@ -41,7 +41,10 @@ trait Platform(config: Config, modules: Seq[Module]) {
   val base: Base
   val env: Env
 
-  def resource(source: Any): Base = ???
+  /** Base for resource files relative to a package
+   * @param source Any object in the package
+   */
+  def resource(source: Any): Base
 
   private var running = true
 

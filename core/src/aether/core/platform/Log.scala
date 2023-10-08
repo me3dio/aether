@@ -10,12 +10,11 @@ object Log {
     def apply(message: LogEvent) = println(message.toString)
   }
   inline def apply(message: String) = {
-    // TODO: Get source from stack trace
-    global(message)
+    global(message, new Throwable())
   }
 
   case class LogEvent(val message: String, val trace: List[StackElement]) extends Event {
-    val source = trace.map(_.simpleRef).mkString(" < ").take(20).padTo(20, ' ')
+    val source = trace.map(_.simpleRef).mkString(" < ").take(32).padTo(32, ' ')
     override def toString = s"$source | $message"
   }
 
@@ -32,25 +31,21 @@ object Log {
     def simpleRef = s"$cleanName:$line"
   }
   
-  def stackTrace(context: Throwable): List[StackElement] = {
-    context.getStackTrace
+  def stackTrace(context: Throwable, index: Int = 0, count: Int = 16): List[StackElement] = {
+    context.getStackTrace.drop(index).take(count)
       .map(t => StackElement(t.getClassName, t.getMethodName, t.getFileName, t.getLineNumber))
       .toList
   }
 
   def stackSource(context: Throwable, elementCount: Int = 3): String = {
-     stackTrace(context).drop(1).take(elementCount).map(_.simpleRef).mkString(" < ")
+     stackTrace(context).drop(3).take(elementCount).map(_.simpleRef).mkString(" < ")
   }
 }
 
 trait Log {
 
-  def apply(throwable: Throwable): Unit = {
-    ???
-  }
-
-  def apply(message: String): Unit = {
-    val trace = stackTrace(new Throwable()).drop(1).take(3)
+  def apply(message: String, context: Throwable): Unit = {
+    val trace = stackTrace(context, 3, 2)
     val event = LogEvent(message, trace)
     apply(event)
   }

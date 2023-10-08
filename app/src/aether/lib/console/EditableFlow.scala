@@ -8,6 +8,9 @@ import EditableFlow.*
 import aether.lib.canvas.Canvas
 import aether.lib.font.Font
 import aether.core.types.Vec2F
+import aether.core.platform.Module
+import aether.core.platform.Event
+import aether.lib.widget.Widget
 
 object EditableFlow {
 
@@ -15,8 +18,10 @@ object EditableFlow {
   case class Text(text: String, color: Color = Color.White) extends Item
 }
 
-class EditableFlow(font: Font) {
+class EditableFlow(font: Font) extends Widget {
   val items = Buffer[Item]()
+  def size = ???
+  def paint(canvas: Canvas) = ???
 
   def visual(width: Float, height: Float)(render: Canvas => Unit) = {
     new Visual {
@@ -30,6 +35,13 @@ class EditableFlow(font: Font) {
       case Text(text, color) => visual(font.width(text), font.height) { canvas =>
           canvas.drawString(Vec2F.Zero, font, text, color.argbF)
         }
+    }
+  }
+
+  def event(event: Event): Unit = {
+    event match {
+      case Widget.Resize(size) =>
+        //TODO
     }
   }
 }
