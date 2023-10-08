@@ -47,7 +47,7 @@ class CanvasWidget(platform: Platform, graphics: Graphics, res: Resources, state
         scroll.event(e)
       case e: PinchEvent =>
         scroll.event(e)
-      case KeyPressed(SPACE) => shader.getState().map(Log(_))
+      case KeyPressed(Space) => shader.getState().map(Log(_))
       // case KeyPressed(C) =>
       // state.canvas.clear()
       // case KeyPressed(E) =>

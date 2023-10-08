@@ -74,11 +74,6 @@ class Mandelbrot(val platform: Platform) extends Module {
         Log(s"Translate $pos")
         scale = scale * Math.exp(-0.4 * wheel).toFloat
       // translateScreen(-pos)
-      case KeyEvent(true, true, keyCode, _) =>
-        keyCode match {
-          case KeyEvent.Code.SPACE =>
-          case _                   =>
-        }
       case w => // Log(s"Event $event")
     }
   }
