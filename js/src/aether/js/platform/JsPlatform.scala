@@ -8,13 +8,14 @@ import aether.core.base.HttpBase
 import aether.js.network.*
 import aether.js.network.JsHttpClient
 import Platform.*
+import aether.core.platform.Log.LogEvent
 
 class JsPlatform extends Platform(Config(), Seq(JsDisplay)) {
   given Platform = this
 
   val name = Platform.Name.Js
   val log = new Log {
-    def apply(message: String) = {
+    def apply(message: LogEvent) = {
       println(message)
     }
   }

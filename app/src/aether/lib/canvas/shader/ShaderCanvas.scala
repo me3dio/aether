@@ -11,6 +11,7 @@ import aether.core.graphics.Graphics
 import aether.core.graphics.Display
 import aether.lib.types.Tx2FAxis
 import aether.core.graphics.Texture
+import aether.core.types.Vec4F
 
 object ShaderCanvas {
 
@@ -70,13 +71,13 @@ class ShaderCanvas(var view: RectF, val tx: Tx2FAxis = Tx2FAxis.Identity)(using 
 
   // -- rendering methods
 
-  def drawTexture(area: RectF, texture: Texture): Unit = {
-    useRenderer(new TextureRenderer(textureShader, texture))
+  def drawTexture(area: RectF, texture: Texture, rgba: Vec4F = Vec4F(1)): Unit = {
+    useRenderer(new TextureRenderer(textureShader, texture, rgba))
     buffer.putTexture(tx.transformArea(area), RectF.unit)
   }
 
-  def drawString(pos: Vec2F, font: Font, string: String): Unit = {
-    useRenderer(new TextureRenderer(textureShader, font.texture))
+  def drawString(pos: Vec2F, font: Font, string: String, rgba: Vec4F = Vec4F(1)): Unit = {
+    useRenderer(new TextureRenderer(textureShader, font.texture, rgba))
     var cx = 0
     for (c <- string) {
       if (font.hasChar(c)) {

@@ -66,6 +66,7 @@ class Color(val argb: Int) extends AnyVal {
   }
 
   def rgbaF = Vec4F(r / 255f, g / 255f, b / 255f, a / 255f)
+  def argbF = Vec4F(a / 255f, r / 255f, g / 255f, b / 255f)
   def rgba255 = Vec4F(r.toFloat, g.toFloat, b.toFloat, a.toFloat)
   def rgba = (argb << 8) | (argb >>>24)
 

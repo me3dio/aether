@@ -8,6 +8,7 @@ import aether.core.types.RectF
 import aether.lib.types.Tx2FAxis
 import aether.lib.font.Font
 import aether.core.graphics.Texture
+import aether.core.types.Vec4F
 
 object Canvas {
   // case class Render(canvas: Canvas, view: RectF) extends Event
@@ -53,9 +54,9 @@ trait Canvas {
   // }
   def fillRect(area: RectF, color: Int): Unit
 
-  def drawTexture(area: RectF, texture: Texture): Unit
+  def drawTexture(area: RectF, texture: Texture, rgba: Vec4F = Vec4F.One): Unit
 
-  def drawString(pos: Vec2F, font: Font, string: String): Unit
+  def drawString(pos: Vec2F, font: Font, string: String, rgba: Vec4F = Vec4F.One): Unit
 
   override def toString() = s"Canvas(tx $tx, view $view)"
 

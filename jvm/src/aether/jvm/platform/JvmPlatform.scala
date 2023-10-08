@@ -15,11 +15,12 @@ import Platform.*
 import aether.core.base.Base
 import aether.core.platform.Env
 import io.github.cdimascio.dotenv.Dotenv
+import aether.core.platform.Log.LogEvent
 
 class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDisplay)) {
   val name = Platform.Name.Jvm
   val log = new Log {
-    def apply(message: String) = {
+    def apply(message: LogEvent) = {
       println(message)
     }
   }

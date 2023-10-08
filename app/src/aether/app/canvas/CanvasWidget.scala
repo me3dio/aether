@@ -28,8 +28,6 @@ class CanvasWidget(platform: Platform, graphics: Graphics, res: Resources, state
   scroll.pos = size / 2
   scroll.scale = 8
 
-  override def pick(transform: Vec2F, pos: Vec2F) = Seq(Widget.PickResult(this, transform))
-
   val draw = new MouseDraw() {
     def draw(pos: Vec2F) = {
       val p = scroll.txModel * pos
@@ -73,13 +71,6 @@ class CanvasWidget(platform: Platform, graphics: Graphics, res: Resources, state
       val tx = scroll.txView.scaled(canvas.grid.radius).toMat3F
       shader.render(size.toVec2I, renderer.view.toRectI, tx, canvas.bufferTex)
     }
-  }
-
-  override def resizeMinimum(): Unit = {
-    size = Vec2F.Zero
-  }
-  override def resize(containerSize: Vec2F): Unit = {
-    size = containerSize
   }
 
 }

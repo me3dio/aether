@@ -6,6 +6,7 @@ import aether.core.graphics.ShaderObject
 import aether.core.graphics.ShaderProgram
 import aether.core.graphics.Graphics
 import aether.lib.util.MatUtil
+import aether.core.types.Vec4F
 
 object TextureRenderer {
   val header = """
@@ -50,7 +51,7 @@ void main()
 
 }
 
-case class TextureRenderer(shader: Shader, texture: Texture)(using g: Graphics) extends ShaderCanvas.Renderer {
+case class TextureRenderer(shader: Shader, texture: Texture, rgba: Vec4F = Vec4F(1))(using g: Graphics) extends ShaderCanvas.Renderer {
 
   def begin() = {
     shader.buffer.vertex.clear()
@@ -65,7 +66,7 @@ case class TextureRenderer(shader: Shader, texture: Texture)(using g: Graphics) 
     shader.programTex.uniform("u_mvpMatrix").get.putMat4F(mvp)
     shader.programTex.attributeBuffer("a_position", shader.buffer.vertex.buffer, shader.buffer.vertex.numComponents)
     // programTex.attributeBuffer("a_color", colorBuffer.buffer, colorBuffer.numComponents)
-    shader.programTex.attribute("a_color").get.put4F(1, 1, 1, 1)
+    shader.programTex.attribute("a_color").get.put4F(rgba)
     shader.programTex.attributeBuffer("a_texCoord", shader.buffer.texCoord.buffer, shader.buffer.texCoord.numComponents)
     shader.programTex.draw(ShaderProgram.Mode.Triangles, 0, shader.buffer.vertex.size)
   }

@@ -1,6 +1,7 @@
 package aether.lib.types
 
 import aether.core.types.*
+import cats.kernel.Monoid
 
 object Tx2FAxis {
 
@@ -28,6 +29,8 @@ case class Tx2FAxis(scale: Vec2F, trans: Vec2F) {
     val inv = Vec2F(1) / scale
     Tx2FAxis(inv, -inv * trans)
   }
+
+  def inverse(pos: Vec2F) = inv * pos
 
   def transformArea(area: RectF): RectF = {
     RectF(scale * area.begin + trans, scale * area.size)

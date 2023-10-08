@@ -10,7 +10,9 @@ object WidgetRoot {
   }
 }
 
-class WidgetRoot(val root: Widget) extends Module {
+class WidgetRoot(val root: Widget) extends Widget {
+
+  def size = root.size
 
   def event(event: Event) = event match {
     // case Canvas.Paint(canvas, rect) => paint(canvas)

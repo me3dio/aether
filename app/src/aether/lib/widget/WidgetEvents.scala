@@ -44,8 +44,8 @@ class WidgetEvents(root: Widget) extends Module {
   var beginPinch: Seq[Vec2F] = _
   var touchOption: Option[List[Event]] = None
 
-  def pickWidget(pos: Vec2F): Option[PickResult] =
-    root.pick(Vec2F.Zero, pos).filter(_.visual.isInstanceOf[Widget]).headOption
+  def pickWidget(pos: Vec2F): Option[PickResult] = ???
+    // root.pick(Vec2F.Zero, pos).filter(_.visual.isInstanceOf[Widget]).headOption
 
 
   def event(event: Event): Unit = {

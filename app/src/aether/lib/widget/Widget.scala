@@ -8,6 +8,7 @@ import Widget.*
 import aether.core.input.TouchEvent
 import aether.lib.canvas.Canvas
 import aether.core.platform.Module
+import org.w3c.dom.Node
 
 object Widget {
   case class Config()
@@ -16,22 +17,24 @@ object Widget {
 
   // case class SetViewport(view: RectF) extends Event
 
-
+  class Node {
+    
+  }
   
 }
 
 trait Widget extends Visual with Module {
 
   /** Pich child Visuals. */
-  def pick(transform: Vec2F, pos: Vec2F): Seq[PickResult] = Seq()
+  // def pick(transform: Vec2F, pos: Vec2F): Seq[PickResult] = Seq()
 
   /** Resize widget to minimum size. */
-  def resizeMinimum(): Unit = {}
+  // def resizeMinimum(): Unit = {}
 
   /**
    * Resize widget to given size.
    */
-  def resize(containerSize: Vec2F): Unit ={}
+  // def resize(containerSize: Vec2F): Unit ={}
   
 
 }
