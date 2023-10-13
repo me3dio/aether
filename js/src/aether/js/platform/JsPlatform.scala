@@ -9,6 +9,7 @@ import aether.js.network.*
 import aether.js.network.JsHttpClient
 import Platform.*
 import aether.core.platform.Log.LogEvent
+import sttp.client3.FetchBackend
 
 class JsPlatform extends Platform(Config(), Seq(JsDisplay)) {
   given Platform = this
@@ -24,6 +25,8 @@ class JsPlatform extends Platform(Config(), Seq(JsDisplay)) {
   val displayFactory = JsDisplay.factory(dispatcher)
   val httpClientFactory = JsHttpClient.factory(dispatcher)
   val webSocketFactory = JsWebSocket.factory
+
+  val sttpBackend = FetchBackend()
 
   val http = JsHttpClient()
   val origin = dom.window.location.origin

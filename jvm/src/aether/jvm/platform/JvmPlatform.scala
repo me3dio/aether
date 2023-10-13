@@ -16,6 +16,9 @@ import aether.core.base.Base
 import aether.core.platform.Env
 import io.github.cdimascio.dotenv.Dotenv
 import aether.core.platform.Log.LogEvent
+import sttp.client3.HttpClientFutureBackend
+import scala.concurrent.ExecutionContext.Implicits.global
+import java.net.http //.`type`.HttpClient
 
 class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDisplay)) {
   val name = Platform.Name.Jvm
@@ -51,6 +54,9 @@ class JvmPlatform(config: Config = Config()) extends Platform(config, Seq(JvmDis
   val displayFactory = JvmDisplay.factory(this)
   val httpClientFactory = JvmHttpClient.factory
   val webSocketFactory = JvmWebSocket.factory(using this)
+
+  val http = HttpClientFutureBackend()
+  val sttpBackend = http
 
   def run(loop: => Boolean): Unit = {
     while (loop) Thread.`yield`()

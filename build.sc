@@ -5,6 +5,7 @@ import mill.scalajslib.ScalaJSModule
 val scalaV = "3.3.0"
 val circeV = "0.14.3"
 val http4sV = "1.0.0-M38"
+val sttpV = "3.9.0"
 val scalaTestV = "3.2.17"
 
 object core extends ScalaModule {
@@ -14,6 +15,7 @@ object core extends ScalaModule {
     ivy"io.circe::circe-core::$circeV",
     ivy"io.circe::circe-generic::$circeV",
     ivy"io.circe::circe-parser::$circeV",
+    ivy"com.softwaremill.sttp.client3::core:$sttpV",
   )
     object test extends Tests {
       def ivyDeps = Agg(
@@ -42,6 +44,7 @@ object js extends ScalaJSModule {
     ivy"io.circe::circe-core::$circeV",
     ivy"io.circe::circe-generic::$circeV",
     ivy"io.circe::circe-parser::$circeV",
+    ivy"com.softwaremill.sttp.client3::core::$sttpV",
     ivy"org.scala-js::scalajs-dom::2.4.0",
     ivy"com.lihaoyi::scalatags::0.12.0"
   )
@@ -59,8 +62,10 @@ object jvm extends ScalaModule {
       case x     => x // linux, mac, windows, sunos
     }
     Agg(
+      // ivy"com.softwaremill.sttp.client3::async-http-client-backend-future:$sttpV", // HttpClient
       ivy"org.java-websocket:Java-WebSocket:1.5.3", // WebSocket
       ivy"io.github.cdimascio:dotenv-java:2.3.2",
+      ivy"com.softwaremill.sttp.client3::core::$sttpV",
     ) ++ Agg("lwjgl", "lwjgl-glfw", "lwjgl-opengl", "lwjgl-opengles").flatMap {
       case module =>
         Seq(

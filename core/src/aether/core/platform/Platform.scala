@@ -7,6 +7,9 @@ import aether.core.network.HttpClient.HttpClientFactory
 
 import Dispatcher.CallbackEvent
 import Platform.*
+import sttp.client3.SttpBackend
+import sttp.client3.Identity
+import scala.concurrent.Future
 
 object Platform {
 
@@ -27,6 +30,8 @@ trait Platform(config: Config, modules: Seq[Module]) {
   val displayFactory: DisplayFactory
   val webSocketFactory: WebSocketFactory
   val httpClientFactory: HttpClientFactory
+
+  def sttpBackend: SttpBackend[Future, Any]
 
   def primaryDisplay: Option[Display] = displayFactory.instances.headOption
 
